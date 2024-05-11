@@ -8,13 +8,19 @@
 import UIKit
 
 class ViewController: UIViewController {
+    private let currentWeatherService: CurrentWeatherService = CurrentWeatherService()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        // Do any additional setup after loading the view.
+        currentWeatherService.getCurrentWeather(for: "Graz"){ result in
+            switch result {
+            case .success(let weather):
+                print("Weather data: \(weather)")
+            case .failure(let error):
+                print("Error fetching current weather: \(error)")
+            }
+        }
     }
-
-
 }
 

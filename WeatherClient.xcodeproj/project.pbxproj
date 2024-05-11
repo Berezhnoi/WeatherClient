@@ -14,6 +14,10 @@
 		4779F5052BEF944F00F4F5BB /* WeatherClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4779F5032BEF944F00F4F5BB /* WeatherClient.xcdatamodeld */; };
 		4779F5072BEF945000F4F5BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4779F5062BEF945000F4F5BB /* Assets.xcassets */; };
 		4779F50A2BEF945000F4F5BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4779F5082BEF945000F4F5BB /* LaunchScreen.storyboard */; };
+		4779F5162BEF9D9700F4F5BB /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F5152BEF9D9700F4F5BB /* APIClient.swift */; };
+		4779F51A2BEF9FEC00F4F5BB /* CurrentWeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F5192BEF9FEC00F4F5BB /* CurrentWeatherService.swift */; };
+		4779F51D2BEFAA0A00F4F5BB /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F51C2BEFAA0A00F4F5BB /* WeatherModels.swift */; };
+		4779F5212BEFAB1000F4F5BB /* GetCurrentWeatherEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F5202BEFAB1000F4F5BB /* GetCurrentWeatherEndpoint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		4779F5062BEF945000F4F5BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4779F5092BEF945000F4F5BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4779F50B2BEF945000F4F5BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4779F5152BEF9D9700F4F5BB /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		4779F5192BEF9FEC00F4F5BB /* CurrentWeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherService.swift; sourceTree = "<group>"; };
+		4779F51C2BEFAA0A00F4F5BB /* WeatherModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModels.swift; sourceTree = "<group>"; };
+		4779F5202BEFAB1000F4F5BB /* GetCurrentWeatherEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCurrentWeatherEndpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +75,8 @@
 		4779F5112BEF98CA00F4F5BB /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				4779F51B2BEFA9E500F4F5BB /* Models */,
+				4779F5142BEF9D5B00F4F5BB /* Networking */,
 				4779F5132BEF992E00F4F5BB /* Screens */,
 				4779F4FA2BEF944F00F4F5BB /* AppDelegate.swift */,
 				4779F4FC2BEF944F00F4F5BB /* SceneDelegate.swift */,
@@ -92,6 +102,32 @@
 				4779F4FE2BEF944F00F4F5BB /* ViewController.swift */,
 			);
 			path = Screens;
+			sourceTree = "<group>";
+		};
+		4779F5142BEF9D5B00F4F5BB /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				4779F51F2BEFAAFD00F4F5BB /* CurrentWeatherService */,
+				4779F5152BEF9D9700F4F5BB /* APIClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		4779F51B2BEFA9E500F4F5BB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4779F51C2BEFAA0A00F4F5BB /* WeatherModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		4779F51F2BEFAAFD00F4F5BB /* CurrentWeatherService */ = {
+			isa = PBXGroup;
+			children = (
+				4779F5192BEF9FEC00F4F5BB /* CurrentWeatherService.swift */,
+				4779F5202BEFAB1000F4F5BB /* GetCurrentWeatherEndpoint.swift */,
+			);
+			path = CurrentWeatherService;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,9 +202,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4779F4FF2BEF944F00F4F5BB /* ViewController.swift in Sources */,
+				4779F51D2BEFAA0A00F4F5BB /* WeatherModels.swift in Sources */,
 				4779F5052BEF944F00F4F5BB /* WeatherClient.xcdatamodeld in Sources */,
 				4779F4FB2BEF944F00F4F5BB /* AppDelegate.swift in Sources */,
+				4779F5162BEF9D9700F4F5BB /* APIClient.swift in Sources */,
 				4779F4FD2BEF944F00F4F5BB /* SceneDelegate.swift in Sources */,
+				4779F5212BEFAB1000F4F5BB /* GetCurrentWeatherEndpoint.swift in Sources */,
+				4779F51A2BEF9FEC00F4F5BB /* CurrentWeatherService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
