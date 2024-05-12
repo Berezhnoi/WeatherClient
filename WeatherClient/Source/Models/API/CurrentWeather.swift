@@ -1,5 +1,5 @@
 //
-//  WeatherModels.swift
+//  CurrentWeather.swift
 //  WeatherClient
 //
 //  Created by rendi on 11.05.2024.
@@ -37,8 +37,8 @@ struct Wind: Decodable {
 }
 
 struct Rain: Decodable {
-    let oneHour: Double
-    let threeHours: Double
+    let oneHour: Double?
+    let threeHours: Double?
 
     enum CodingKeys: String, CodingKey {
         case oneHour = "1h"
@@ -59,18 +59,18 @@ struct Sys: Decodable {
 }
 
 struct CurrentWeatherResponse: Decodable {
+    let id: Int
+    let dt: Int
+    let cod: Int
+    let timezone: Int
+    let visibility: Int
+    let name: String
+    let base: String
     let coord: Coord
     let weather: [Weather]
-    let base: String
     let main: Main
-    let visibility: Int
     let wind: Wind
     let rain: Rain?
     let clouds: Clouds
-    let dt: Int
     let sys: Sys
-    let timezone: Int
-    let id: Int
-    let name: String
-    let cod: Int
 }
