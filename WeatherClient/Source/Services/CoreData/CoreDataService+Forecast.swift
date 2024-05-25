@@ -31,7 +31,6 @@ extension CoreDataService: CoreDataForecast {
         for forecastData in forecast.list {
             let date = Date(timeIntervalSince1970: forecastData.dt).startOfDay()
             let temperature = forecastData.main.temp
-            print(date, temperature)
 
             if var existing = minMaxTemperatures[date] {
                 existing.min = min(existing.min, temperature)

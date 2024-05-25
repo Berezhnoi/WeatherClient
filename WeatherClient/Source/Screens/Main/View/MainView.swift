@@ -10,35 +10,62 @@ import UIKit
 class MainView: UIView {
     
     weak var delegate: MainViewDelegate?
-    
-    var label = UILabel()
+    private var collectionView: UICollectionView!
+    private var headerView: HeaderView!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupUI() {
-        backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0) // Lighter blue color
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 54.0)
-        label.textAlignment = .center
+    private func setupUI() {
+        setupHeaderView()
+        setupCollectionView()
     }
     
-    func setupLayout() {
+    private func setupHeaderView() {
+        headerView = HeaderView(frame: .zero)
+        headerView.backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
+        headerView.configure(with: "Graz")
+        addSubview(headerView)
         
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            headerView.topAnchor.constraint(equalTo: topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: Constant.HEADER_HEIGHT)
+        ])
+    }
+    
+    private func setupCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
         
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constant.labelSideOffset).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constant.labelSideOffset).isActive = true
-        label.topAnchor.constraint(equalTo: topAnchor, constant: Constant.labelSideOffset).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constant.labelSideOffset).isActive = true
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
+        addSubview(collectionView)
+        
+        // Register custom cell classes
+        collectionView.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
+        collectionView.register(ForecastCell.self, forCellWithReuseIdentifier: ForecastCell.reuseIdentifier)
+        
+        // Configure layout constraints
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
 }
 
@@ -46,12 +73,11 @@ class MainView: UIView {
 extension MainView: MainViewProtocol {
     
     func setupWeather(text: String) {
-        label.text = text
     }
 }
 
 // MARK: - Constant
 private enum Constant {
     
-    static let labelSideOffset: CGFloat = 30.0
+    static let HEADER_HEIGHT: CGFloat = 140.0
 }
