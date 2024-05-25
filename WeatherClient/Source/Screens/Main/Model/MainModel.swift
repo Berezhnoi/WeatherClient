@@ -11,38 +11,37 @@ class MainModel {
     
     weak var delegate: MainModelDelegate?
     
-    private let currentWeatherService: CurrentWeatherService
     private let coreDataWeather: CoreDataWeather
-    private let apiRefreshInterval: TimeInterval = 600 // 10 minutes in seconds
+    private let currentWeatherService: CurrentWeatherService
+    private let forecastService: ForecastService
+    private let currentWeatherApiRefreshInterval: TimeInterval = 600 // 10 minutes in seconds
+    private let forecastApiRefreshInterval: TimeInterval = 3600 // 1 hour in seconds
       
     init(delegate: MainModelDelegate? = nil) {
         self.delegate = delegate
-        self.currentWeatherService = ServiceProvider.currentWeatherNetworkService()
         self.coreDataWeather = ServiceProvider.coreDataWeatherService()
+        self.currentWeatherService = ServiceProvider.currentWeatherNetworkService()
+        self.forecastService = ServiceProvider.forecastNetworkService()
     }
 }
 
-// MARK: - MainModel + CoreData + API
+// MARK: - CurrentWeather
 private extension MainModel {
     func storeCurrentWeather(weatherInfo: CurrentWeatherResponse) {
         coreDataWeather.insertWetherInfo(with: weatherInfo)
-    }
-    
-    func deleteAll() {
-        coreDataWeather.deleteAll()
     }
     
     func fetchWeatherDataFromLocalStorage() -> CDWeatherInfo? {
         return coreDataWeather.fetchAllWeatherInfo().last
     }
     
-    func loadCurrentWeather(for city: String, completion: @escaping (Result<CDWeatherInfo, Error>) -> Void) {
+    func loadCurrentWeatherAPI(for city: String, completion: @escaping (Result<CDWeatherInfo, Error>) -> Void) {
         currentWeatherService.getCurrentWeather(for: city) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let weather):
                     print("Weather data loaded from API for \(city)")
-                    self.deleteAll()
+                    self.coreDataWeather.deleteCurrentWeatherInfo()
                     self.storeCurrentWeather(weatherInfo: weather)
                     if let updatedData = self.fetchWeatherDataFromLocalStorage() {
                         completion(.success(updatedData))
@@ -57,18 +56,15 @@ private extension MainModel {
         }
     }
 
-    func isDataFresh(_ weatherData: CDWeatherInfo) -> Bool {
+    func isCurrentWeatherDataFresh(_ weatherData: CDWeatherInfo) -> Bool {
         guard let createdAt = weatherData.createdAt else {
             return false // No timestamp available, data is not fresh
         }
         let currentTime = Date().timeIntervalSince1970
-        return currentTime - createdAt.timeIntervalSince1970 <= apiRefreshInterval
+        return currentTime - createdAt.timeIntervalSince1970 <= currentWeatherApiRefreshInterval
     }
-}
-
-// MARK: - MainModelProtocol
-extension MainModel: MainModelProtocol {
-    func loadData() {
+    
+    func loadCurrentWeather() {
         let defaultCity = "Graz"
         
         // Define a completion handler to handle the result of loading weather data
@@ -76,7 +72,7 @@ extension MainModel: MainModelProtocol {
             switch result {
             case .success(let weather):
                 // Call delegate with the newly fetched weather data
-                self?.delegate?.dataDidLoad(with: weather)
+                self?.delegate?.currentWeatherDidLoad(with: weather)
             case .failure(let error):
                 // Handle error
                 print("Error loading current weather for \(defaultCity): \(error)")
@@ -85,18 +81,95 @@ extension MainModel: MainModelProtocol {
         
         // Check if weather data is available in local storage
         if let weatherData = fetchWeatherDataFromLocalStorage() {
-            delegate?.dataDidLoad(with: weatherData)
+            delegate?.currentWeatherDidLoad(with: weatherData)
             print("Set current weather from local storage")
             
             // If the data is not recent enough, retrieve it from the API
-            if !isDataFresh(weatherData) {
+            if !isCurrentWeatherDataFresh(weatherData) {
                 DispatchQueue.global(qos: .default).async {
-                    self.loadCurrentWeather(for: defaultCity, completion: completionHandler)
+                    self.loadCurrentWeatherAPI(for: defaultCity, completion: completionHandler)
                 }
             }
         } else {
             // If the data is not available in local storage, retrieve it from the API.
-            loadCurrentWeather(for: defaultCity, completion: completionHandler)
+            loadCurrentWeatherAPI(for: defaultCity, completion: completionHandler)
         }
+    }
+    
+}
+
+// MARK: - Forecast
+private extension MainModel {
+    func storeForecast(forecast: ForecastResponse) {
+        coreDataWeather.insertForecast(with: forecast)
+    }
+    
+    func fetchForecastFromLocalStorage(cityId: Int) -> [CDForecastItem]? {
+        return coreDataWeather.fetchCityForecast(cityId: cityId)
+    }
+    
+    func loadForecastAPI(for city: String, completion: @escaping (Result<[CDForecastItem], Error>) -> Void) {
+        forecastService.getForecast(for: city) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let forecast):
+                    print("Forecast data loaded from API for \(city)")
+                    self.coreDataWeather.deleteCityForecast(cityId: 2778067)
+                    self.storeForecast(forecast: forecast)
+                    if let updatedData = self.fetchForecastFromLocalStorage(cityId: 2778067) {
+                        completion(.success(updatedData))
+                    } else {
+                        completion(.failure("Data not found" as! Error))
+                    }
+                case .failure(let error):
+                    print("Error fetching forecast for \(city): \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    func isForecastDataFresh(_ weatherData: [CDForecastItem]) -> Bool {
+        return false
+    }
+    
+    func loadForecast() {
+        let defaultCity = "Graz"
+        
+        // Define a completion handler to handle the result of loading forecast
+        let completionHandler: (Result<[CDForecastItem], Error>) -> Void = { [weak self] result in
+            switch result {
+            case .success(let forecast):
+                // Call delegate with the newly fetched forecast
+                self?.delegate?.forecastDidLoad(with: forecast)
+            case .failure(let error):
+                // Handle error
+                print("Error loading current weather for \(defaultCity): \(error)")
+            }
+        }
+        
+        // Check if forecast data is available in local storage
+        if let forecastData = fetchForecastFromLocalStorage(cityId: 2778067) {
+            delegate?.forecastDidLoad(with: forecastData)
+            print("Set current forecast from local storage")
+            
+            // If the data is not recent enough, retrieve it from the API
+            if !isForecastDataFresh(forecastData) {
+                DispatchQueue.global(qos: .default).async {
+                    self.loadForecastAPI(for: defaultCity, completion: completionHandler)
+                }
+            }
+        } else {
+            // If the data is not available in local storage, retrieve it from the API.
+            loadForecastAPI(for: defaultCity, completion: completionHandler)
+        }
+    }
+}
+
+// MARK: - MainModelProtocol
+extension MainModel: MainModelProtocol {
+    func loadData() {
+        loadCurrentWeather()
+        loadForecast()
     }
 }

@@ -41,8 +41,12 @@ extension MainViewController: MainViewDelegate {
 
 // MARK: - MainModelDelegate
 extension MainViewController: MainModelDelegate {
+    func forecastDidLoad(with data: [CDForecastItem]) {
+        
+    }
     
-    func dataDidLoad(with data: CDWeatherInfo) {
+
+    func currentWeatherDidLoad(with data: CDWeatherInfo) {
         let dataToShow =  "\(data.temperature)"
         contentView.setupWeather(text: dataToShow)
     }

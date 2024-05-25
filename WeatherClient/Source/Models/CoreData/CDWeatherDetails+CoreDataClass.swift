@@ -2,7 +2,7 @@
 //  CDWeatherDetails+CoreDataClass.swift
 //  WeatherClient
 //
-//  Created by rendi on 11.05.2024.
+//  Created by rendi on 25.05.2024.
 //
 //
 

@@ -2,7 +2,7 @@
 //  CDWeatherInfo+CoreDataProperties.swift
 //  WeatherClient
 //
-//  Created by rendi on 12.05.2024.
+//  Created by rendi on 25.05.2024.
 //
 //
 
@@ -16,12 +16,12 @@ extension CDWeatherInfo {
         return NSFetchRequest<CDWeatherInfo>(entityName: "CDWeatherInfo")
     }
 
-    @NSManaged public var id: Int32
     @NSManaged public var cityName: String?
-    @NSManaged public var temperature: Double
-    @NSManaged public var pressure: Int32
-    @NSManaged public var humidity: Int32
     @NSManaged public var createdAt: Date?
+    @NSManaged public var humidity: Int32
+    @NSManaged public var id: Int32
+    @NSManaged public var pressure: Int32
+    @NSManaged public var temperature: Double
     @NSManaged public var relationship: NSSet?
 
 }

@@ -1,5 +1,5 @@
 //
-//  CoreDataService+Weather.swift
+//  CoreDataService+CurrentWeather.swift
 //  WeatherClient
 //
 //  Created by rendi on 11.05.2024.
@@ -7,15 +7,14 @@
 
 import CoreData
 
-protocol CoreDataWeather {
-    
+protocol CoreDataCurrentWeather {
     func insertWetherInfo(with info: CurrentWeatherResponse)
     func fetchAllWeatherInfo() -> [CDWeatherInfo]
-    func deleteAll() -> Void
+    func deleteCurrentWeatherInfo() -> Void
 }
 
-// MARK: - CoreDataWeather
-extension CoreDataService: CoreDataWeather {
+// MARK: - CoreDataCurrentWeather
+extension CoreDataService: CoreDataCurrentWeather {
     func insertWetherInfo(with info: CurrentWeatherResponse) {
         
         let weatherInfoEntityDescription = NSEntityDescription.entity(forEntityName: "CDWeatherInfo", in: context)!
@@ -49,7 +48,7 @@ extension CoreDataService: CoreDataWeather {
         return fetchedResult
     }
     
-    func deleteAll() {
+    func deleteCurrentWeatherInfo() {
         deleteAll(CDWeatherInfo.self)
     }
 }

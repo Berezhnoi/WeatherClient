@@ -24,7 +24,7 @@ class MainView: UIView {
     }
     
     func setupUI() {
-        backgroundColor = .red
+        backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0) // Lighter blue color
         label.textColor = .white
         label.font = .systemFont(ofSize: 54.0)
         label.textAlignment = .center
