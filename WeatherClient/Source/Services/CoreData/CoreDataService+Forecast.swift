@@ -9,7 +9,7 @@ import CoreData
 
 protocol CoreDataForecast {
     func insertForecast(with forecast: ForecastResponse)
-    func fetchCityForecast(cityId: Int) -> [CDForecastItem]
+    func fetchCityForecast(cityId: Int) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])
     func deleteCityForecast(cityId: Int) -> Void
 }
 
@@ -68,20 +68,20 @@ extension CoreDataService: CoreDataForecast {
         return forecastItem
     }
     
-    func fetchCityForecast(cityId: Int) -> [CDForecastItem] {
+    func fetchCityForecast(cityId: Int) -> (forecast: CDForecast?, forecastItems: [CDForecastItem]) {
         let fetchRequest: NSFetchRequest<CDForecast> = CDForecast.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %d", cityId)
 
         do {
             if let forecast = try context.fetch(fetchRequest).first,
                let forecastItems = forecast.relationship as? Set<CDForecastItem> {
-                return Array(forecastItems)
+                return (forecast, Array(forecastItems))
             }
         } catch {
             print("Failed to fetch forecast: \(error.localizedDescription)")
         }
 
-        return []
+        return (nil, [])
     }
 
     func deleteCityForecast(cityId: Int) {

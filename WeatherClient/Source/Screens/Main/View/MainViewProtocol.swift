@@ -9,5 +9,6 @@ import Foundation
 
 protocol MainViewProtocol {
     
-    func setupWeather(text: String)
+    func setupCurrentWeather(with data: CDWeatherInfo)
+    func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem])
 }

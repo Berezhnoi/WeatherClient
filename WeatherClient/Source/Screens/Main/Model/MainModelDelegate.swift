@@ -10,5 +10,5 @@ import Foundation
 protocol MainModelDelegate: AnyObject {
     
     func currentWeatherDidLoad(with data: CDWeatherInfo)
-    func forecastDidLoad(with data: [CDForecastItem])
+    func forecastDidLoad(forecastMeta: CDForecast,  forecastItems: [CDForecastItem])
 }

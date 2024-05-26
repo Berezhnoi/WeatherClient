@@ -25,6 +25,14 @@ class MainModel {
     }
 }
 
+// MARK: - MainModelProtocol
+extension MainModel: MainModelProtocol {
+    func loadData() {
+        loadCurrentWeather()
+        loadForecast()
+    }
+}
+
 // MARK: - CurrentWeather
 private extension MainModel {
     func storeCurrentWeather(weatherInfo: CurrentWeatherResponse) {
@@ -104,11 +112,14 @@ private extension MainModel {
         coreDataWeather.insertForecast(with: forecast)
     }
     
-    func fetchForecastFromLocalStorage(cityId: Int) -> [CDForecastItem]? {
+    func fetchForecastFromLocalStorage(cityId: Int) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])? {
         return coreDataWeather.fetchCityForecast(cityId: cityId)
     }
     
-    func loadForecastAPI(for city: String, completion: @escaping (Result<[CDForecastItem], Error>) -> Void) {
+    func loadForecastAPI(
+        for city: String,
+        completion: @escaping (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem]), Error>) -> Void
+    ) {
         forecastService.getForecast(for: city) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -129,32 +140,41 @@ private extension MainModel {
         }
     }
 
-    func isForecastDataFresh(_ weatherData: [CDForecastItem]) -> Bool {
-        return false
+    func isForecastDataFresh(_ forecastMeta: CDForecast?) -> Bool {
+        guard let updatedAt = forecastMeta?.updatedAt else {
+            return false // No timestamp available, data is not fresh
+        }
+        let currentTime = Date().timeIntervalSince1970
+        return currentTime - updatedAt.timeIntervalSince1970 <= forecastApiRefreshInterval
     }
     
     func loadForecast() {
         let defaultCity = "Graz"
         
         // Define a completion handler to handle the result of loading forecast
-        let completionHandler: (Result<[CDForecastItem], Error>) -> Void = { [weak self] result in
+        let completionHandler: (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem]), Error>) -> Void = {
+            [weak self] result in
             switch result {
-            case .success(let forecast):
-                // Call delegate with the newly fetched forecast
-                self?.delegate?.forecastDidLoad(with: forecast)
+            case .success(let data):
+                if let forecastMeta = data.forecast {
+                    self?.delegate?.forecastDidLoad(forecastMeta: forecastMeta, forecastItems: data.forecastItems)
+                }
             case .failure(let error):
                 // Handle error
-                print("Error loading current weather for \(defaultCity): \(error)")
+                print("Error loading forecast for \(defaultCity): \(error)")
             }
         }
         
         // Check if forecast data is available in local storage
-        if let forecastData = fetchForecastFromLocalStorage(cityId: 2778067) {
-            delegate?.forecastDidLoad(with: forecastData)
-            print("Set current forecast from local storage")
+        if let (forecastMeta, forecastItems) = fetchForecastFromLocalStorage(cityId: 2778067) {
+            
+            if (forecastMeta != nil) {
+                delegate?.forecastDidLoad(forecastMeta: forecastMeta!, forecastItems: forecastItems)
+                print("Set current forecast from local storage")
+            }
             
             // If the data is not recent enough, retrieve it from the API
-            if !isForecastDataFresh(forecastData) {
+            if !isForecastDataFresh(forecastMeta) {
                 DispatchQueue.global(qos: .default).async {
                     self.loadForecastAPI(for: defaultCity, completion: completionHandler)
                 }
@@ -163,13 +183,5 @@ private extension MainModel {
             // If the data is not available in local storage, retrieve it from the API.
             loadForecastAPI(for: defaultCity, completion: completionHandler)
         }
-    }
-}
-
-// MARK: - MainModelProtocol
-extension MainModel: MainModelProtocol {
-    func loadData() {
-        loadCurrentWeather()
-        loadForecast()
     }
 }

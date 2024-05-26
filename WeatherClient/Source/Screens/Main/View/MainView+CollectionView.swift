@@ -8,6 +8,7 @@
 import UIKit
 
 // MARK: - UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 extension MainView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
@@ -15,20 +16,21 @@ extension MainView: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
-            return 1 // Current weather section
+            return getForecastItemsCount()
         } else {
-            return 5 // Forecast section
+            return 0
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentWeatherCell.reuseIdentifier, for: indexPath) as! CurrentWeatherCell
-            // Configure the cell with current weather data
-            return cell
-        } else if indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ForecastCell.reuseIdentifier, for: indexPath) as! ForecastCell
-            // Configure the cell with forecast data
+            if let forecastItem = getForecastItemByIndex(indexPath.row) {
+                let title = forecastItem.date?.dayOfWeek() ?? "-"
+                let tempMin: String = "\(Int(forecastItem.tempMin.rounded()))"
+                let tempMax: String = "\(Int(forecastItem.tempMax.rounded()))"
+                cell.configure(title: title, tempMin: tempMin, tempMax: tempMax)
+            }
             return cell
         }
         

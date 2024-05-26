@@ -13,6 +13,9 @@ class MainView: UIView {
     private var collectionView: UICollectionView!
     private var headerView: HeaderView!
     
+    private var forecastMeta: CDForecast?
+    private var forecastItems: [CDForecastItem] = []
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -22,6 +25,17 @@ class MainView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public func getForecastItemByIndex(_ index: Int) -> CDForecastItem? {
+        return forecastItems[index]
+    }
+    
+    public func getForecastItemsCount() -> Int {
+        return forecastItems.count
+    }
+}
+
+// MARK: - UI
+private extension MainView {
     private func setupUI() {
         setupHeaderView()
         setupCollectionView()
@@ -30,7 +44,6 @@ class MainView: UIView {
     private func setupHeaderView() {
         headerView = HeaderView(frame: .zero)
         headerView.backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
-        headerView.configure(with: "Graz")
         addSubview(headerView)
         
         headerView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,9 +57,9 @@ class MainView: UIView {
     
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
+//        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+//        layout.minimumLineSpacing = 10
+//        layout.minimumInteritemSpacing = 10
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
@@ -71,8 +84,16 @@ class MainView: UIView {
 
 // MARK: - MainViewProtocol
 extension MainView: MainViewProtocol {
+    func setupCurrentWeather(with data: CDWeatherInfo) {
+        let cityName = data.cityName ?? "-"
+        let temperature = "\(Int(data.temperature.rounded()))"
+        headerView.configure(cityName: cityName, temperature: temperature)
+    }
     
-    func setupWeather(text: String) {
+    func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem]) {
+        self.forecastMeta = forecastMeta
+        self.forecastItems = forecastItems.sorted(by: { ($0.date ?? Date()) < ($1.date ?? Date()) })
+        collectionView.reloadData()
     }
 }
 

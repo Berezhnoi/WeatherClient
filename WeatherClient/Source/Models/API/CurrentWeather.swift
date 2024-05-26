@@ -63,7 +63,7 @@ struct CurrentWeatherResponse: Decodable {
     let dt: Int
     let cod: Int
     let timezone: Int
-    let visibility: Int
+    let visibility: Int?
     let name: String
     let base: String
     let coord: Coord
