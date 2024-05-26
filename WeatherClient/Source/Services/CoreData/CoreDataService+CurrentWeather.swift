@@ -8,15 +8,18 @@
 import CoreData
 
 protocol CoreDataCurrentWeather {
-    func insertWetherInfo(with info: CurrentWeatherResponse)
+    func insertWetherInfo(with info: CurrentWeatherResponse, isMainCity: Bool)
     func fetchAllWeatherInfo() -> [CDWeatherInfo]
+    func fetchMainCity() -> CDWeatherInfo?
+    func fetchFirstCity() -> CDWeatherInfo?
+    func fetchCurrentWeather(for cityName: String) -> CDWeatherInfo?
     func deleteCityCurrentWeather(cityName: String) -> Void
     func deleteAllCurrentWeatherInfo() -> Void
 }
 
 // MARK: - CoreDataCurrentWeather
-extension CoreDataService: CoreDataCurrentWeather {    
-    func insertWetherInfo(with info: CurrentWeatherResponse) {
+extension CoreDataService: CoreDataCurrentWeather {
+    func insertWetherInfo(with info: CurrentWeatherResponse, isMainCity: Bool) {
         
         let weatherInfoEntityDescription = NSEntityDescription.entity(forEntityName: "CDWeatherInfo", in: context)!
         guard let weatherInfoEntity = NSManagedObject(entity: weatherInfoEntityDescription, insertInto: context) as? CDWeatherInfo
@@ -26,6 +29,7 @@ extension CoreDataService: CoreDataCurrentWeather {
         }
         
         weatherInfoEntity.id = Int32(info.id)
+        weatherInfoEntity.isMainCity = isMainCity
         weatherInfoEntity.cityName = info.name
         weatherInfoEntity.temperature = info.main.temp
         weatherInfoEntity.pressure = Int32(info.main.pressure)
@@ -47,6 +51,42 @@ extension CoreDataService: CoreDataCurrentWeather {
         let fetchedResult = fetchDataFromEntity(CDWeatherInfo.self, fetchRequest: fetchRequest)
         
         return fetchedResult
+    }
+    
+    func fetchCurrentWeather(for cityName: String) -> CDWeatherInfo? {
+        let fetchRequest: NSFetchRequest<CDWeatherInfo> = CDWeatherInfo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "cityName == %@", cityName)
+
+        do {
+            return try context.fetch(fetchRequest).first
+        } catch {
+            print("Failed to fetch current weather for \(cityName): \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    func fetchMainCity() -> CDWeatherInfo? {
+        let fetchRequest: NSFetchRequest<CDWeatherInfo> = CDWeatherInfo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isMainCity == true")
+        
+        do {
+            return try context.fetch(fetchRequest).first
+        } catch {
+            print("Failed to fetch main city: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    func fetchFirstCity() -> CDWeatherInfo? {
+        let fetchRequest: NSFetchRequest<CDWeatherInfo> = CDWeatherInfo.fetchRequest()
+        fetchRequest.fetchLimit = 1 // Limit to fetch only one result
+        
+        do {
+            return try context.fetch(fetchRequest).first
+        } catch {
+            print("Failed to fetch first city: \(error.localizedDescription)")
+            return nil
+        }
     }
     
     func deleteAllCurrentWeatherInfo() {
