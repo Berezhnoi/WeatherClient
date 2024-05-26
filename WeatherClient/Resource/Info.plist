@@ -21,5 +21,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To provide accurate weather information, this app requires access to your location. Your location data is used solely for delivering weather forecasts based on your current city.</string>
 </dict>
 </plist>

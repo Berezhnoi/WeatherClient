@@ -9,8 +9,8 @@ import CoreData
 
 protocol CoreDataForecast {
     func insertForecast(with forecast: ForecastResponse)
-    func fetchCityForecast(cityId: Int) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])
-    func deleteCityForecast(cityId: Int) -> Void
+    func fetchCityForecast(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])
+    func deleteCityForecast(cityName: String) -> Void
 }
 
 // MARK: - CoreDataForecast
@@ -68,9 +68,9 @@ extension CoreDataService: CoreDataForecast {
         return forecastItem
     }
     
-    func fetchCityForecast(cityId: Int) -> (forecast: CDForecast?, forecastItems: [CDForecastItem]) {
+    func fetchCityForecast(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem]) {
         let fetchRequest: NSFetchRequest<CDForecast> = CDForecast.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %d", cityId)
+        fetchRequest.predicate = NSPredicate(format: "cityName == %@", cityName)
 
         do {
             if let forecast = try context.fetch(fetchRequest).first,
@@ -84,9 +84,9 @@ extension CoreDataService: CoreDataForecast {
         return (nil, [])
     }
 
-    func deleteCityForecast(cityId: Int) {
+    func deleteCityForecast(cityName: String) {
         let fetchRequest: NSFetchRequest<CDForecast> = CDForecast.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %d", cityId)
+        fetchRequest.predicate = NSPredicate(format: "cityName == %@", cityName)
 
         do {
             if let forecast = try context.fetch(fetchRequest).first {

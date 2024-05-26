@@ -14,6 +14,8 @@ class MainModel {
     private let coreDataWeather: CoreDataWeather
     private let currentWeatherService: CurrentWeatherService
     private let forecastService: ForecastService
+    private let locationService: LocationService
+    
     private let currentWeatherApiRefreshInterval: TimeInterval = 600 // 10 minutes in seconds
     private let forecastApiRefreshInterval: TimeInterval = 3600 // 1 hour in seconds
       
@@ -22,14 +24,33 @@ class MainModel {
         self.coreDataWeather = ServiceProvider.coreDataWeatherService()
         self.currentWeatherService = ServiceProvider.currentWeatherNetworkService()
         self.forecastService = ServiceProvider.forecastNetworkService()
+        
+        self.locationService = LocationService()
+        self.locationService.delegate = self
+    }
+    
+    private func loadWeather(for cityName: String) {
+        loadCurrentWeather(cityName: cityName)
+        loadForecast(cityName: cityName)
     }
 }
 
 // MARK: - MainModelProtocol
 extension MainModel: MainModelProtocol {
     func loadData() {
-        loadCurrentWeather()
-        loadForecast()
+        self.locationService.fetchCurrentCity()
+    }
+}
+
+extension MainModel: LocationServiceDelegate {
+    func locationService(_ service: LocationService, didUpdateLocation cityName: String) {
+        loadWeather(for: cityName)
+    }
+    
+    func locationService(_ service: LocationService, didFailWithError error: Error) {
+        // Handle error
+        print("Location service error: \(error.localizedDescription)")
+        loadWeather(for: "Kyiv")
     }
 }
 
@@ -72,9 +93,7 @@ private extension MainModel {
         return currentTime - createdAt.timeIntervalSince1970 <= currentWeatherApiRefreshInterval
     }
     
-    func loadCurrentWeather() {
-        let defaultCity = "Graz"
-        
+    func loadCurrentWeather(cityName: String) {
         // Define a completion handler to handle the result of loading weather data
         let completionHandler: (Result<CDWeatherInfo, Error>) -> Void = { [weak self] result in
             switch result {
@@ -83,7 +102,7 @@ private extension MainModel {
                 self?.delegate?.currentWeatherDidLoad(with: weather)
             case .failure(let error):
                 // Handle error
-                print("Error loading current weather for \(defaultCity): \(error)")
+                print("Error loading current weather for \(cityName): \(error)")
             }
         }
         
@@ -95,12 +114,12 @@ private extension MainModel {
             // If the data is not recent enough, retrieve it from the API
             if !isCurrentWeatherDataFresh(weatherData) {
                 DispatchQueue.global(qos: .default).async {
-                    self.loadCurrentWeatherAPI(for: defaultCity, completion: completionHandler)
+                    self.loadCurrentWeatherAPI(for: cityName, completion: completionHandler)
                 }
             }
         } else {
             // If the data is not available in local storage, retrieve it from the API.
-            loadCurrentWeatherAPI(for: defaultCity, completion: completionHandler)
+            loadCurrentWeatherAPI(for: cityName, completion: completionHandler)
         }
     }
     
@@ -112,28 +131,28 @@ private extension MainModel {
         coreDataWeather.insertForecast(with: forecast)
     }
     
-    func fetchForecastFromLocalStorage(cityId: Int) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])? {
-        return coreDataWeather.fetchCityForecast(cityId: cityId)
+    func fetchForecastFromLocalStorage(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])? {
+        return coreDataWeather.fetchCityForecast(cityName: cityName)
     }
     
     func loadForecastAPI(
-        for city: String,
+        for cityName: String,
         completion: @escaping (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem]), Error>) -> Void
     ) {
-        forecastService.getForecast(for: city) { result in
+        forecastService.getForecast(for: cityName) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let forecast):
-                    print("Forecast data loaded from API for \(city)")
-                    self.coreDataWeather.deleteCityForecast(cityId: 2778067)
+                    print("Forecast data loaded from API for \(cityName)")
+                    self.coreDataWeather.deleteCityForecast(cityName: cityName)
                     self.storeForecast(forecast: forecast)
-                    if let updatedData = self.fetchForecastFromLocalStorage(cityId: 2778067) {
+                    if let updatedData = self.fetchForecastFromLocalStorage(cityName: cityName) {
                         completion(.success(updatedData))
                     } else {
                         completion(.failure("Data not found" as! Error))
                     }
                 case .failure(let error):
-                    print("Error fetching forecast for \(city): \(error)")
+                    print("Error fetching forecast for \(cityName): \(error)")
                     completion(.failure(error))
                 }
             }
@@ -148,9 +167,7 @@ private extension MainModel {
         return currentTime - updatedAt.timeIntervalSince1970 <= forecastApiRefreshInterval
     }
     
-    func loadForecast() {
-        let defaultCity = "Graz"
-        
+    func loadForecast(cityName: String) {
         // Define a completion handler to handle the result of loading forecast
         let completionHandler: (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem]), Error>) -> Void = {
             [weak self] result in
@@ -161,12 +178,12 @@ private extension MainModel {
                 }
             case .failure(let error):
                 // Handle error
-                print("Error loading forecast for \(defaultCity): \(error)")
+                print("Error loading forecast for \(cityName): \(error)")
             }
         }
         
         // Check if forecast data is available in local storage
-        if let (forecastMeta, forecastItems) = fetchForecastFromLocalStorage(cityId: 2778067) {
+        if let (forecastMeta, forecastItems) = fetchForecastFromLocalStorage(cityName: cityName) {
             
             if (forecastMeta != nil) {
                 delegate?.forecastDidLoad(forecastMeta: forecastMeta!, forecastItems: forecastItems)
@@ -176,12 +193,12 @@ private extension MainModel {
             // If the data is not recent enough, retrieve it from the API
             if !isForecastDataFresh(forecastMeta) {
                 DispatchQueue.global(qos: .default).async {
-                    self.loadForecastAPI(for: defaultCity, completion: completionHandler)
+                    self.loadForecastAPI(for: cityName, completion: completionHandler)
                 }
             }
         } else {
             // If the data is not available in local storage, retrieve it from the API.
-            loadForecastAPI(for: defaultCity, completion: completionHandler)
+            loadForecastAPI(for: cityName, completion: completionHandler)
         }
     }
 }
