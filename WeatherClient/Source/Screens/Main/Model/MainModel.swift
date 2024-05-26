@@ -64,13 +64,13 @@ private extension MainModel {
         return coreDataWeather.fetchAllWeatherInfo().last
     }
     
-    func loadCurrentWeatherAPI(for city: String, completion: @escaping (Result<CDWeatherInfo, Error>) -> Void) {
-        currentWeatherService.getCurrentWeather(for: city) { result in
+    func loadCurrentWeatherAPI(for cityName: String, completion: @escaping (Result<CDWeatherInfo, Error>) -> Void) {
+        currentWeatherService.getCurrentWeather(for: cityName) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let weather):
-                    print("Weather data loaded from API for \(city)")
-                    self.coreDataWeather.deleteCurrentWeatherInfo()
+                    print("Weather data loaded from API for \(cityName)")
+                    self.coreDataWeather.deleteCityCurrentWeather(cityName: cityName)
                     self.storeCurrentWeather(weatherInfo: weather)
                     if let updatedData = self.fetchWeatherDataFromLocalStorage() {
                         completion(.success(updatedData))
@@ -78,7 +78,7 @@ private extension MainModel {
                         completion(.failure("Data not found" as! Error))
                     }
                 case .failure(let error):
-                    print("Error fetching current weather for \(city): \(error)")
+                    print("Error fetching current weather for \(cityName): \(error)")
                     completion(.failure(error))
                 }
             }

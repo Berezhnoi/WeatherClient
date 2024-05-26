@@ -10,11 +10,12 @@ import CoreData
 protocol CoreDataCurrentWeather {
     func insertWetherInfo(with info: CurrentWeatherResponse)
     func fetchAllWeatherInfo() -> [CDWeatherInfo]
-    func deleteCurrentWeatherInfo() -> Void
+    func deleteCityCurrentWeather(cityName: String) -> Void
+    func deleteAllCurrentWeatherInfo() -> Void
 }
 
 // MARK: - CoreDataCurrentWeather
-extension CoreDataService: CoreDataCurrentWeather {
+extension CoreDataService: CoreDataCurrentWeather {    
     func insertWetherInfo(with info: CurrentWeatherResponse) {
         
         let weatherInfoEntityDescription = NSEntityDescription.entity(forEntityName: "CDWeatherInfo", in: context)!
@@ -48,8 +49,27 @@ extension CoreDataService: CoreDataCurrentWeather {
         return fetchedResult
     }
     
-    func deleteCurrentWeatherInfo() {
+    func deleteAllCurrentWeatherInfo() {
         deleteAll(CDWeatherInfo.self)
+    }
+    
+    func deleteCityCurrentWeather(cityName: String) {
+        let fetchRequest: NSFetchRequest<CDWeatherInfo> = CDWeatherInfo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "cityName == %@", cityName)
+
+        do {
+            if let currentWeather = try context.fetch(fetchRequest).first {
+                // Delete associated weather details first
+                if let weatherDetails = currentWeather.relationship?.allObjects as? [CDWeatherDetails] {
+                    weatherDetails.forEach { context.delete($0) }
+                }
+                // Then delete the current weather entity itself
+                context.delete(currentWeather)
+                save(context: context)
+            }
+        } catch {
+            print("Failed to delete current weather: \(error.localizedDescription)")
+        }
     }
 }
 
