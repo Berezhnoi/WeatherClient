@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CurrentWeatherCell: UICollectionViewCell {
+class CurrentWeatherCell: UITableViewCell {
     static let reuseIdentifier = "CurrentWeatherCell"
     
     let temperatureLabel: UILabel = {
@@ -18,8 +18,8 @@ class CurrentWeatherCell: UICollectionViewCell {
         return label
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(temperatureLabel)
         temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -38,4 +38,3 @@ class CurrentWeatherCell: UICollectionViewCell {
         temperatureLabel.text = temperature
     }
 }
-

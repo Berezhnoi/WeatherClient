@@ -10,8 +10,7 @@ import UIKit
 class MainView: UIView {
     
     weak var delegate: MainViewDelegate?
-    private var collectionView: UICollectionView!
-    private var headerView: HeaderView!
+    private var tableView: UITableView!
     
     private var forecastMeta: CDForecast?
     private var forecastItems: [CDForecastItem] = []
@@ -37,48 +36,46 @@ class MainView: UIView {
 // MARK: - UI
 private extension MainView {
     private func setupUI() {
-        setupHeaderView()
-        setupCollectionView()
+        setupTableView()
     }
     
-    private func setupHeaderView() {
-        headerView = HeaderView(frame: .zero)
-        headerView.backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
-        addSubview(headerView)
-        
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: Constant.HEADER_HEIGHT)
-        ])
+    private func createTableHeader() -> UIView {
+        let headerFrame = CGRect(
+            x: 0,
+            y: 0,
+            width: tableView.frame.size.width,
+            height: Constant.HEADER_HEIGHT
+        )
+        let headerView = HeaderView(frame: headerFrame)
+        return headerView
     }
     
-    private func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-//        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-//        layout.minimumLineSpacing = 10
-//        layout.minimumInteritemSpacing = 10
+    private func setupTableView() {
+        tableView = UITableView(frame: .zero, style: .plain)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
+        tableView.tableHeaderView = createTableHeader()
         
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
-        addSubview(collectionView)
+        addSubview(tableView)
         
         // Register custom cell classes
-        collectionView.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
-        collectionView.register(ForecastCell.self, forCellWithReuseIdentifier: ForecastCell.reuseIdentifier)
+        tableView.register(CurrentWeatherCell.self, forCellReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
+        tableView.register(ForecastCell.self, forCellReuseIdentifier: ForecastCell.reuseIdentifier)
         
         // Configure layout constraints
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            tableView.topAnchor.constraint(equalTo: topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        
+        // Prevent automatic adjustment of content inset
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        }
     }
 }
 
@@ -87,13 +84,16 @@ extension MainView: MainViewProtocol {
     func setupCurrentWeather(with data: CDWeatherInfo) {
         let cityName = data.cityName ?? "-"
         let temperature = "\(Int(data.temperature.rounded()))"
-        headerView.configure(cityName: cityName, temperature: temperature)
+        guard let tableHeaderView = tableView.tableHeaderView as? HeaderView else {
+            return;
+        }
+        tableHeaderView.configure(cityName: cityName, temperature: temperature)
     }
     
     func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem]) {
         self.forecastMeta = forecastMeta
         self.forecastItems = forecastItems.sorted(by: { ($0.date ?? Date()) < ($1.date ?? Date()) })
-        collectionView.reloadData()
+        tableView.reloadData()
     }
 }
 

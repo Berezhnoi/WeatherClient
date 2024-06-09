@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ForecastCell: UICollectionViewCell {
+class ForecastCell: UITableViewCell {
     static let reuseIdentifier = "ForecastCell"
     
     let titleLabel: UILabel = {
@@ -34,6 +34,12 @@ class ForecastCell: UICollectionViewCell {
         return label
     }()
     
+    let weatherIconImageView: UIImageView = {
+         let imageView = UIImageView()
+         imageView.contentMode = .scaleAspectFit
+         return imageView
+    }()
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -43,8 +49,8 @@ class ForecastCell: UICollectionViewCell {
         return stackView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
     }
     
@@ -56,26 +62,33 @@ class ForecastCell: UICollectionViewCell {
         addSubview(titleLabel)
         addSubview(stackView)
         
+        stackView.addArrangedSubview(weatherIconImageView)
         stackView.addArrangedSubview(temperatureMinLabel)
         stackView.addArrangedSubview(temperatureMaxLabel)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        weatherIconImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add constraints for the icon's size
+        weatherIconImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        weatherIconImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
     
-    func configure(title: String, tempMin: String, tempMax: String) {
+    func configure(title: String, tempMin: String, tempMax: String, weatherCondition: String?) {
         titleLabel.text = title
         temperatureMinLabel.text = tempMin
         temperatureMaxLabel.text = tempMax
+        if let weatherCondition = weatherCondition, let iconImage = UIImage(named: weatherCondition) {
+            weatherIconImageView.image = iconImage
+        }
     }
 }
-
-

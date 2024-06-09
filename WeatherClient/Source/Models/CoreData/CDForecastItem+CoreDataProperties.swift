@@ -2,7 +2,7 @@
 //  CDForecastItem+CoreDataProperties.swift
 //  WeatherClient
 //
-//  Created by rendi on 25.05.2024.
+//  Created by rendi on 09.06.2024.
 //
 //
 
@@ -20,6 +20,7 @@ extension CDForecastItem {
     @NSManaged public var id: Int32
     @NSManaged public var tempMax: Double
     @NSManaged public var tempMin: Double
+    @NSManaged public var weatherCondition: String?
     @NSManaged public var relationship: CDForecast?
 
 }

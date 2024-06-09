@@ -18,8 +18,7 @@
 		475AC73B2C024CE2009411AE /* CDForecast+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC7372C024CE2009411AE /* CDForecast+CoreDataProperties.swift */; };
 		475AC73C2C024CE2009411AE /* CDForecastItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC7382C024CE2009411AE /* CDForecastItem+CoreDataClass.swift */; };
 		475AC73D2C024CE2009411AE /* CDForecast+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC7392C024CE2009411AE /* CDForecast+CoreDataClass.swift */; };
-		475AC73E2C024CE2009411AE /* CDForecastItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC73A2C024CE2009411AE /* CDForecastItem+CoreDataProperties.swift */; };
-		475AC7402C024F61009411AE /* MainView+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC73F2C024F61009411AE /* MainView+CollectionView.swift */; };
+		475AC7402C024F61009411AE /* MainView+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC73F2C024F61009411AE /* MainView+TableView.swift */; };
 		475AC7422C025042009411AE /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC7412C025042009411AE /* HeaderView.swift */; };
 		475AC7442C02505E009411AE /* ForecastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC7432C02505E009411AE /* ForecastCell.swift */; };
 		475AC7462C025071009411AE /* CurrentWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475AC7452C025071009411AE /* CurrentWeatherCell.swift */; };
@@ -47,6 +46,8 @@
 		479735C32BF14A9900098917 /* GetForecastEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479735C22BF14A9900098917 /* GetForecastEndpoint.swift */; };
 		479735C52BF14ACC00098917 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479735C42BF14ACC00098917 /* Forecast.swift */; };
 		479735C72BF14B0E00098917 /* ForecastService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479735C62BF14B0E00098917 /* ForecastService.swift */; };
+		47984E512C15E0D0004E5AC9 /* HourlyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47984E502C15E0D0004E5AC9 /* HourlyCell.swift */; };
+		47984E552C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47984E542C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,8 +62,7 @@
 		475AC7372C024CE2009411AE /* CDForecast+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDForecast+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		475AC7382C024CE2009411AE /* CDForecastItem+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDForecastItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		475AC7392C024CE2009411AE /* CDForecast+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDForecast+CoreDataClass.swift"; sourceTree = "<group>"; };
-		475AC73A2C024CE2009411AE /* CDForecastItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDForecastItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		475AC73F2C024F61009411AE /* MainView+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainView+CollectionView.swift"; sourceTree = "<group>"; };
+		475AC73F2C024F61009411AE /* MainView+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainView+TableView.swift"; sourceTree = "<group>"; };
 		475AC7412C025042009411AE /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		475AC7432C02505E009411AE /* ForecastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastCell.swift; sourceTree = "<group>"; };
 		475AC7452C025071009411AE /* CurrentWeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherCell.swift; sourceTree = "<group>"; };
@@ -92,6 +92,8 @@
 		479735C22BF14A9900098917 /* GetForecastEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetForecastEndpoint.swift; sourceTree = "<group>"; };
 		479735C42BF14ACC00098917 /* Forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forecast.swift; sourceTree = "<group>"; };
 		479735C62BF14B0E00098917 /* ForecastService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastService.swift; sourceTree = "<group>"; };
+		47984E502C15E0D0004E5AC9 /* HourlyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyCell.swift; sourceTree = "<group>"; };
+		47984E542C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDForecastItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 			children = (
 				475AC7432C02505E009411AE /* ForecastCell.swift */,
 				475AC7452C025071009411AE /* CurrentWeatherCell.swift */,
+				47984E502C15E0D0004E5AC9 /* HourlyCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -256,10 +259,10 @@
 		4779F54E2BEFBFC500F4F5BB /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				47984E542C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift */,
 				475AC7392C024CE2009411AE /* CDForecast+CoreDataClass.swift */,
 				475AC7372C024CE2009411AE /* CDForecast+CoreDataProperties.swift */,
 				475AC7382C024CE2009411AE /* CDForecastItem+CoreDataClass.swift */,
-				475AC73A2C024CE2009411AE /* CDForecastItem+CoreDataProperties.swift */,
 				475AC7012C0233A6009411AE /* CDWeatherDetails+CoreDataClass.swift */,
 				475AC7002C0233A6009411AE /* CDWeatherDetails+CoreDataProperties.swift */,
 				475AC7022C0233A6009411AE /* CDWeatherInfo+CoreDataClass.swift */,
@@ -304,7 +307,7 @@
 				4779F5692BF101EA00F4F5BB /* MainViewDelegate.swift */,
 				4779F56A2BF101EA00F4F5BB /* MainViewProtocol.swift */,
 				4779F56B2BF101EA00F4F5BB /* MainView.swift */,
-				475AC73F2C024F61009411AE /* MainView+CollectionView.swift */,
+				475AC73F2C024F61009411AE /* MainView+TableView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 			files = (
 				475AC6DD2C023155009411AE /* CoreDataService.swift in Sources */,
 				475AC70A2C0233A6009411AE /* CDWeatherInfo+CoreDataClass.swift in Sources */,
+				47984E512C15E0D0004E5AC9 /* HourlyCell.swift in Sources */,
 				4779F56E2BF101EA00F4F5BB /* MainModelDelegate.swift in Sources */,
 				475AC7512C0372AF009411AE /* CDWeatherInfo+CoreDataProperties.swift in Sources */,
 				4779F5722BF101EA00F4F5BB /* MainView.swift in Sources */,
@@ -412,7 +416,7 @@
 				4779F4FB2BEF944F00F4F5BB /* AppDelegate.swift in Sources */,
 				475AC6E02C023155009411AE /* CoreDataService+Forecast.swift in Sources */,
 				475AC73C2C024CE2009411AE /* CDForecastItem+CoreDataClass.swift in Sources */,
-				475AC7402C024F61009411AE /* MainView+CollectionView.swift in Sources */,
+				475AC7402C024F61009411AE /* MainView+TableView.swift in Sources */,
 				475AC7082C0233A6009411AE /* CDWeatherDetails+CoreDataProperties.swift in Sources */,
 				4779F5162BEF9D9700F4F5BB /* APIClient.swift in Sources */,
 				475AC73B2C024CE2009411AE /* CDForecast+CoreDataProperties.swift in Sources */,
@@ -421,7 +425,6 @@
 				4779F5752BF11C6D00F4F5BB /* ServiceProvider.swift in Sources */,
 				4779F4FD2BEF944F00F4F5BB /* SceneDelegate.swift in Sources */,
 				4779F5212BEFAB1000F4F5BB /* GetCurrentWeatherEndpoint.swift in Sources */,
-				475AC73E2C024CE2009411AE /* CDForecastItem+CoreDataProperties.swift in Sources */,
 				4779F56C2BF101EA00F4F5BB /* MainViewController.swift in Sources */,
 				479735C52BF14ACC00098917 /* Forecast.swift in Sources */,
 				475AC7092C0233A6009411AE /* CDWeatherDetails+CoreDataClass.swift in Sources */,
@@ -430,6 +433,7 @@
 				4779F56D2BF101EA00F4F5BB /* MainModelProtocol.swift in Sources */,
 				475AC7542C037E78009411AE /* InitialViewController.swift in Sources */,
 				479735C72BF14B0E00098917 /* ForecastService.swift in Sources */,
+				47984E552C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift in Sources */,
 				475AC73D2C024CE2009411AE /* CDForecast+CoreDataClass.swift in Sources */,
 				479735C32BF14A9900098917 /* GetForecastEndpoint.swift in Sources */,
 				475AC69B2C022D0E009411AE /* DateExtensions.swift in Sources */,

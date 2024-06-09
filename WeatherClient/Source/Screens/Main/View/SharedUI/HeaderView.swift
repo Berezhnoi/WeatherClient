@@ -48,7 +48,7 @@ class HeaderView: UIView {
 
     func configure(cityName: String, temperature: String) {
         titleLabel.text = cityName
-        temperatureLabel.text = temperature
+        temperatureLabel.text = "\(temperature)°"
     }
 }
 

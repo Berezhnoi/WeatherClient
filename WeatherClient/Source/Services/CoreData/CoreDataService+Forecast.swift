@@ -27,11 +27,19 @@ extension CoreDataService: CoreDataForecast {
         forecastEntity.updatedAt = Date()
 
         var minMaxTemperatures: [Date: (min: Double, max: Double)] = [:]
+        var weatherConditionsByDate: [Date: [String: Int]] = [:] // weather conditions
 
         for forecastData in forecast.list {
             let date = Date(timeIntervalSince1970: forecastData.dt).startOfDay()
             let temperature = forecastData.main.temp
+            let weatherCondition = forecastData.weather.first?.main ?? "Unknown" // Get the main weather condition
 
+            // Update the weather condition occurrence count for the current date
+            if weatherConditionsByDate[date] == nil {
+                weatherConditionsByDate[date] = [:]
+            }
+            weatherConditionsByDate[date]?[weatherCondition, default: 0] += 1
+            
             if var existing = minMaxTemperatures[date] {
                 existing.min = min(existing.min, temperature)
                 existing.max = max(existing.max, temperature)
@@ -45,7 +53,9 @@ extension CoreDataService: CoreDataForecast {
 
         for date in sortedDates {
             let (minTemp, maxTemp) = minMaxTemperatures[date]!
-            if let forecastItem = insertForecastItem(date: date, minTemp: minTemp, maxTemp: maxTemp, parent: forecastEntity) {
+            let mostFrequentWeather = weatherConditionsByDate[date]?.max { $0.value < $1.value }?.key ?? "Unknown"
+
+            if let forecastItem = insertForecastItem(date: date, minTemp: minTemp, maxTemp: maxTemp, weatherCondition: mostFrequentWeather, parent: forecastEntity) {
                 forecastEntity.addToRelationship(forecastItem)
             }
         }
@@ -53,7 +63,7 @@ extension CoreDataService: CoreDataForecast {
         save(context: context)
     }
 
-    private func insertForecastItem(date: Date, minTemp: Double, maxTemp: Double, parent: CDForecast) -> CDForecastItem? {
+    private func insertForecastItem(date: Date, minTemp: Double, maxTemp: Double, weatherCondition: String, parent: CDForecast) -> CDForecastItem? {
         let forecastItemEntityDescription = NSEntityDescription.entity(forEntityName: "CDForecastItem", in: context)!
         guard let forecastItem = NSManagedObject(entity: forecastItemEntityDescription, insertInto: context) as? CDForecastItem else {
             assertionFailure("Failed to create CDForecastItem entity")
@@ -63,8 +73,8 @@ extension CoreDataService: CoreDataForecast {
         forecastItem.date = date
         forecastItem.tempMin = minTemp
         forecastItem.tempMax = maxTemp
+        forecastItem.weatherCondition = weatherCondition
         forecastItem.relationship = parent
-
         return forecastItem
     }
     
