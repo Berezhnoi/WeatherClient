@@ -13,7 +13,7 @@ class MainView: UIView {
     private var tableView: UITableView!
     
     private var forecastMeta: CDForecast?
-    private var forecastItems: [CDForecastItem] = []
+    public var forecastItems: [CDForecastItem] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -60,7 +60,7 @@ private extension MainView {
         addSubview(tableView)
         
         // Register custom cell classes
-        tableView.register(CurrentWeatherCell.self, forCellReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
+        tableView.register(HourlyTableViewCell.self, forCellReuseIdentifier: HourlyTableViewCell.reuseIdentifier)
         tableView.register(ForecastCell.self, forCellReuseIdentifier: ForecastCell.reuseIdentifier)
         
         // Configure layout constraints
