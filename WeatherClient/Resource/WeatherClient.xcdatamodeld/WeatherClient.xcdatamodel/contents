@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="CDForecast" representedClassName="CDForecast" syncable="YES">
+        <attribute name="cityName" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="relationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDForecastItem" inverseName="relationship" inverseEntity="CDForecastItem"/>
+        <relationship name="relationshipHourlyForecast" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDHourlyForecastItem" inverseName="relationship" inverseEntity="CDHourlyForecastItem"/>
+    </entity>
+    <entity name="CDForecastItem" representedClassName="CDForecastItem" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="tempMax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="tempMin" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="weatherCondition" optional="YES" attributeType="String"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDForecast" inverseName="relationship" inverseEntity="CDForecast"/>
+    </entity>
+    <entity name="CDHourlyForecastItem" representedClassName="CDHourlyForecastItem" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="temperature" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="weatherCondition" optional="YES" attributeType="String"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDForecast" inverseName="relationshipHourlyForecast" inverseEntity="CDForecast"/>
+    </entity>
+    <entity name="CDWeatherDetails" representedClassName="CDWeatherDetails" syncable="YES">
+        <attribute name="details" optional="YES" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="mainInfo" optional="YES" attributeType="String"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDWeatherInfo" inverseName="relationship" inverseEntity="CDWeatherInfo"/>
+    </entity>
+    <entity name="CDWeatherInfo" representedClassName="CDWeatherInfo" syncable="YES">
+        <attribute name="cityName" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="humidity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isMainCity" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="pressure" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="temperature" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="relationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDWeatherDetails" inverseName="relationship" inverseEntity="CDWeatherDetails"/>
+    </entity>
+</model>

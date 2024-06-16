@@ -1,0 +1,55 @@
+//
+//  MainViewController.swift
+//  WeatherClinet2024
+//
+//  Created by user on 06.05.2024.
+//
+
+import UIKit
+
+class MainViewController: UIViewController {
+    
+    var model: MainModelProtocol!
+    var contentView: MainViewProtocol!
+    
+    override func loadView() {
+        let mainView = MainView(frame: .zero)
+        mainView.delegate = self
+        contentView = mainView
+        view = mainView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupInitialState()
+        model.loadData()
+        let backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
+        view.backgroundColor = backgroundColor
+        navigationController?.navigationBar.barTintColor = backgroundColor
+    }
+    
+    private func setupInitialState() {
+        let mainModel = MainModel(delegate: self)
+        model = mainModel
+    }
+}
+
+// MARK: - MainViewDelegate
+extension MainViewController: MainViewDelegate {
+    
+    func cityDidTap() {
+        model.loadData()
+    }
+}
+
+// MARK: - MainModelDelegate
+extension MainViewController: MainModelDelegate {
+    
+    func currentWeatherDidLoad(with data: CDWeatherInfo) {
+        contentView.setupCurrentWeather(with: data)
+    }
+    
+    func forecastDidLoad(forecastMeta: CDForecast, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem]) {
+        contentView.setupForecast(forecastMeta: forecastMeta, forecastItems: forecastItems, hourlyForecastItems: hourlyForecastItems)
+    }
+}
