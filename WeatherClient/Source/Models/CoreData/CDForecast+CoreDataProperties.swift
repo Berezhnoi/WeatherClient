@@ -2,7 +2,7 @@
 //  CDForecast+CoreDataProperties.swift
 //  WeatherClient
 //
-//  Created by rendi on 25.05.2024.
+//  Created by rendi on 16.06.2024.
 //
 //
 
@@ -20,6 +20,7 @@ extension CDForecast {
     @NSManaged public var id: Int32
     @NSManaged public var updatedAt: Date?
     @NSManaged public var relationship: NSSet?
+    @NSManaged public var relationshipHourlyForecast: NSSet?
 
 }
 
@@ -37,6 +38,23 @@ extension CDForecast {
 
     @objc(removeRelationship:)
     @NSManaged public func removeFromRelationship(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for relationshipHourlyForecast
+extension CDForecast {
+
+    @objc(addRelationshipHourlyForecastObject:)
+    @NSManaged public func addToRelationshipHourlyForecast(_ value: CDHourlyForecastItem)
+
+    @objc(removeRelationshipHourlyForecastObject:)
+    @NSManaged public func removeFromRelationshipHourlyForecast(_ value: CDHourlyForecastItem)
+
+    @objc(addRelationshipHourlyForecast:)
+    @NSManaged public func addToRelationshipHourlyForecast(_ values: NSSet)
+
+    @objc(removeRelationshipHourlyForecast:)
+    @NSManaged public func removeFromRelationshipHourlyForecast(_ values: NSSet)
 
 }
 

@@ -9,7 +9,7 @@ import CoreData
 
 protocol CoreDataForecast {
     func insertForecast(with forecast: ForecastResponse)
-    func fetchCityForecast(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])
+    func fetchCityForecast(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem])
     func deleteCityForecast(cityName: String) -> Void
 }
 
@@ -47,6 +47,16 @@ extension CoreDataService: CoreDataForecast {
             } else {
                 minMaxTemperatures[date] = (min: temperature, max: temperature)
             }
+            
+            // Insert hourly forecast item
+            if let hourlyForecastItem = insertHourlyForecastItem(
+                date: Date(timeIntervalSince1970: forecastData.dt),
+                temperature: temperature,
+                weatherCondition: weatherCondition,
+                parent: forecastEntity)
+            {
+                forecastEntity.addToRelationshipHourlyForecast(hourlyForecastItem)
+            }
         }
 
         let sortedDates = minMaxTemperatures.keys.sorted()
@@ -78,20 +88,35 @@ extension CoreDataService: CoreDataForecast {
         return forecastItem
     }
     
-    func fetchCityForecast(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem]) {
+    private func insertHourlyForecastItem(date: Date, temperature: Double, weatherCondition: String, parent: CDForecast) -> CDHourlyForecastItem? {
+         let hourlyForecastItemDescription = NSEntityDescription.entity(forEntityName: "CDHourlyForecastItem", in: context)!
+         guard let hourlyForecastItem = NSManagedObject(entity: hourlyForecastItemDescription, insertInto: context) as? CDHourlyForecastItem else {
+             assertionFailure("Failed to create CDHourlyForecastItem entity")
+             return nil
+         }
+         
+         hourlyForecastItem.date = date
+         hourlyForecastItem.temperature = temperature
+         hourlyForecastItem.weatherCondition = weatherCondition
+         hourlyForecastItem.relationship = parent
+         return hourlyForecastItem
+     }
+    
+    func fetchCityForecast(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem]) {
         let fetchRequest: NSFetchRequest<CDForecast> = CDForecast.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "cityName == %@", cityName)
 
         do {
-            if let forecast = try context.fetch(fetchRequest).first,
-               let forecastItems = forecast.relationship as? Set<CDForecastItem> {
-                return (forecast, Array(forecastItems))
+            if let forecast = try context.fetch(fetchRequest).first {
+                let forecastItems = (forecast.relationship as? Set<CDForecastItem>) ?? []
+                let hourlyForecastItems = (forecast.relationshipHourlyForecast as? Set<CDHourlyForecastItem>) ?? []
+                return (forecast, Array(forecastItems), Array(hourlyForecastItems))
             }
         } catch {
             print("Failed to fetch forecast: \(error.localizedDescription)")
         }
 
-        return (nil, [])
+        return (nil, [], [])
     }
 
     func deleteCityForecast(cityName: String) {
@@ -103,6 +128,10 @@ extension CoreDataService: CoreDataForecast {
                 // Delete associated forecast items first
                 if let forecastItems = forecast.relationship?.allObjects as? [CDForecastItem] {
                     forecastItems.forEach { context.delete($0) }
+                }
+                // Delete associated hourly forecast items
+                if let hourlyForecastItems = forecast.relationshipHourlyForecast?.allObjects as? [CDHourlyForecastItem] {
+                    hourlyForecastItems.forEach { context.delete($0) }
                 }
                 // Then delete the forecast entity itself
                 context.delete(forecast)

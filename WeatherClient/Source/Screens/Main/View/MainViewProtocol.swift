@@ -10,5 +10,5 @@ import Foundation
 protocol MainViewProtocol {
     
     func setupCurrentWeather(with data: CDWeatherInfo)
-    func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem])
+    func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem])
 }

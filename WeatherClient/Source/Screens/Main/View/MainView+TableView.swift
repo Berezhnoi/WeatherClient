@@ -23,7 +23,7 @@ extension MainView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: HourlyTableViewCell.reuseIdentifier, for: indexPath) as! HourlyTableViewCell
-            cell.configure(with: forecastItems)
+            cell.configure(with: getHourlyForecastItems())
             return cell
         }
         

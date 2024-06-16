@@ -149,13 +149,13 @@ private extension MainModel {
         coreDataWeather.insertForecast(with: forecast)
     }
     
-    func fetchForecastFromLocalStorage(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem])? {
+    func fetchForecastFromLocalStorage(cityName: String) -> (forecast: CDForecast?, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem])? {
         return coreDataWeather.fetchCityForecast(cityName: cityName)
     }
     
     func loadForecastAPI(
         for cityName: String,
-        completion: @escaping (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem]), Error>) -> Void
+        completion: @escaping (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem]), Error>) -> Void
     ) {
         forecastService.getForecast(for: cityName) { result in
             DispatchQueue.main.async {
@@ -167,7 +167,7 @@ private extension MainModel {
                     if let updatedData = self.fetchForecastFromLocalStorage(cityName: cityName) {
                         completion(.success(updatedData))
                     } else {
-                        completion(.failure("Data not found" as! Error))
+                        completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data not found"])))
                     }
                 case .failure(let error):
                     print("Error fetching forecast for \(cityName): \(error)")
@@ -187,24 +187,23 @@ private extension MainModel {
     
     func loadForecast(cityName: String) {
         // Define a completion handler to handle the result of loading forecast
-        let completionHandler: (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem]), Error>) -> Void = {
+        let completionHandler: (Result<(forecast: CDForecast?, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem]), Error>) -> Void = {
             [weak self] result in
             switch result {
             case .success(let data):
                 if let forecastMeta = data.forecast {
-                    self?.delegate?.forecastDidLoad(forecastMeta: forecastMeta, forecastItems: data.forecastItems)
+                    self?.delegate?.forecastDidLoad(forecastMeta: forecastMeta, forecastItems: data.forecastItems, hourlyForecastItems: data.hourlyForecastItems)
                 }
             case .failure(let error):
-                // Handle error
                 print("Error loading forecast for \(cityName): \(error)")
             }
         }
         
         // Check if forecast data is available in local storage
-        if let (forecastMeta, forecastItems) = fetchForecastFromLocalStorage(cityName: cityName) {
+        if let (forecastMeta, forecastItems, hourlyForecastItems) = fetchForecastFromLocalStorage(cityName: cityName) {
             
             if (forecastMeta != nil) {
-                delegate?.forecastDidLoad(forecastMeta: forecastMeta!, forecastItems: forecastItems)
+                delegate?.forecastDidLoad(forecastMeta: forecastMeta!, forecastItems: forecastItems, hourlyForecastItems: hourlyForecastItems)
                 print("Set current forecast from local storage")
             }
             

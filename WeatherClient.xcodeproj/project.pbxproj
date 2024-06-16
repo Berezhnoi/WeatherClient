@@ -42,6 +42,8 @@
 		4779F5712BF101EA00F4F5BB /* MainViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F56A2BF101EA00F4F5BB /* MainViewProtocol.swift */; };
 		4779F5722BF101EA00F4F5BB /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F56B2BF101EA00F4F5BB /* MainView.swift */; };
 		4779F5752BF11C6D00F4F5BB /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779F5742BF11C6D00F4F5BB /* ServiceProvider.swift */; };
+		478EB9CB2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478EB9C92C1F06BD0015959C /* CDHourlyForecastItem+CoreDataProperties.swift */; };
+		478EB9CC2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478EB9CA2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataClass.swift */; };
 		479735C32BF14A9900098917 /* GetForecastEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479735C22BF14A9900098917 /* GetForecastEndpoint.swift */; };
 		479735C52BF14ACC00098917 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479735C42BF14ACC00098917 /* Forecast.swift */; };
 		479735C72BF14B0E00098917 /* ForecastService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479735C62BF14B0E00098917 /* ForecastService.swift */; };
@@ -88,6 +90,8 @@
 		4779F56A2BF101EA00F4F5BB /* MainViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewProtocol.swift; sourceTree = "<group>"; };
 		4779F56B2BF101EA00F4F5BB /* MainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4779F5742BF11C6D00F4F5BB /* ServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
+		478EB9C92C1F06BD0015959C /* CDHourlyForecastItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDHourlyForecastItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		478EB9CA2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDHourlyForecastItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		479735C22BF14A9900098917 /* GetForecastEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetForecastEndpoint.swift; sourceTree = "<group>"; };
 		479735C42BF14ACC00098917 /* Forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forecast.swift; sourceTree = "<group>"; };
 		479735C62BF14B0E00098917 /* ForecastService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastService.swift; sourceTree = "<group>"; };
@@ -259,6 +263,8 @@
 		4779F54E2BEFBFC500F4F5BB /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				478EB9CA2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataClass.swift */,
+				478EB9C92C1F06BD0015959C /* CDHourlyForecastItem+CoreDataProperties.swift */,
 				47984E542C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift */,
 				475AC7392C024CE2009411AE /* CDForecast+CoreDataClass.swift */,
 				475AC7372C024CE2009411AE /* CDForecast+CoreDataProperties.swift */,
@@ -418,6 +424,7 @@
 				475AC7402C024F61009411AE /* MainView+TableView.swift in Sources */,
 				475AC7082C0233A6009411AE /* CDWeatherDetails+CoreDataProperties.swift in Sources */,
 				4779F5162BEF9D9700F4F5BB /* APIClient.swift in Sources */,
+				478EB9CC2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataClass.swift in Sources */,
 				475AC73B2C024CE2009411AE /* CDForecast+CoreDataProperties.swift in Sources */,
 				4779F5702BF101EA00F4F5BB /* MainViewDelegate.swift in Sources */,
 				475AC7442C02505E009411AE /* ForecastCell.swift in Sources */,
@@ -433,6 +440,7 @@
 				4779F56D2BF101EA00F4F5BB /* MainModelProtocol.swift in Sources */,
 				475AC7542C037E78009411AE /* InitialViewController.swift in Sources */,
 				479735C72BF14B0E00098917 /* ForecastService.swift in Sources */,
+				478EB9CB2C1F06BD0015959C /* CDHourlyForecastItem+CoreDataProperties.swift in Sources */,
 				47984E552C15F7EA004E5AC9 /* CDForecastItem+CoreDataProperties.swift in Sources */,
 				475AC73D2C024CE2009411AE /* CDForecast+CoreDataClass.swift in Sources */,
 				479735C32BF14A9900098917 /* GetForecastEndpoint.swift in Sources */,

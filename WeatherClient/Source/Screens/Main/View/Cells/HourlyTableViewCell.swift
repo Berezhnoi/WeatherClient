@@ -3,7 +3,7 @@ import UIKit
 class HourlyTableViewCell: UITableViewCell {
     static let reuseIdentifier = "HourlyTableViewCell"
     
-    private var hourlyData: [CDForecastItem] = []
+    private var hourlyData: [CDHourlyForecastItem] = []
     
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -36,7 +36,7 @@ class HourlyTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(with hourlyData: [CDForecastItem]) {
+    func configure(with hourlyData: [CDHourlyForecastItem]) {
         self.hourlyData = hourlyData
         collectionView.reloadData()
     }
@@ -50,9 +50,30 @@ extension HourlyTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.reuseIdentifier, for: indexPath) as! HourlyCollectionViewCell
         let hourlyWeather = hourlyData[indexPath.item]
+
+        let timeText: String
+        if indexPath.item == 0 {
+            timeText = "Now"
+        } else if let date = hourlyWeather.date {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "ha" // Format to display hour in 12-hour format with AM/PM
+            
+            // Check if it's the first item of the day
+            let previousHourlyWeather = hourlyData[indexPath.item - 1]
+            if let previousDate = previousHourlyWeather.date,
+               !Calendar.current.isDate(date, equalTo: previousDate, toGranularity: .day) {
+                let dayOfWeek = date.dayOfWeek()
+                timeText = "\(dayOfWeek) \(dateFormatter.string(from: date))"
+            } else {
+                timeText = dateFormatter.string(from: date)
+            }
+        } else {
+            timeText = "-"
+        }
+
         cell.configure(
-            with: hourlyWeather.date?.dayOfWeek() ?? "-",
-            temperature: "\(hourlyWeather.tempMax)",
+            with: timeText,
+            temperature: "\(Int(hourlyWeather.temperature.rounded()))°",
             weatherCondition: hourlyWeather.weatherCondition
         )
         return cell
@@ -61,6 +82,6 @@ extension HourlyTableViewCell: UICollectionViewDataSource {
 
 extension HourlyTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 75, height: 100) // Adjust as needed
+        return CGSize(width: 85, height: 100) // Adjust as needed
     }
 }

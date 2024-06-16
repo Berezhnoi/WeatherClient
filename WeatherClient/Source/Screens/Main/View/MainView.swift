@@ -13,7 +13,8 @@ class MainView: UIView {
     private var tableView: UITableView!
     
     private var forecastMeta: CDForecast?
-    public var forecastItems: [CDForecastItem] = []
+    private var forecastItems: [CDForecastItem] = []
+    private var hourlyForecastItems: [CDHourlyForecastItem] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,6 +31,10 @@ class MainView: UIView {
     
     public func getForecastItemsCount() -> Int {
         return forecastItems.count
+    }
+    
+    public func getHourlyForecastItems() -> [CDHourlyForecastItem] {
+        return hourlyForecastItems;
     }
 }
 
@@ -81,6 +86,7 @@ private extension MainView {
 
 // MARK: - MainViewProtocol
 extension MainView: MainViewProtocol {
+    
     func setupCurrentWeather(with data: CDWeatherInfo) {
         let cityName = data.cityName ?? "-"
         let temperature = "\(Int(data.temperature.rounded()))"
@@ -90,9 +96,10 @@ extension MainView: MainViewProtocol {
         tableHeaderView.configure(cityName: cityName, temperature: temperature)
     }
     
-    func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem]) {
+    func setupForecast(forecastMeta: CDForecast, forecastItems: [CDForecastItem], hourlyForecastItems: [CDHourlyForecastItem]) {
         self.forecastMeta = forecastMeta
         self.forecastItems = forecastItems.sorted(by: { ($0.date ?? Date()) < ($1.date ?? Date()) })
+        self.hourlyForecastItems = hourlyForecastItems.sorted(by: { ($0.date ?? Date()) < ($1.date ?? Date()) })
         tableView.reloadData()
     }
 }
