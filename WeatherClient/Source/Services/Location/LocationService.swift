@@ -33,7 +33,11 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         }
         
         // Use reverse geocoding to get the city name
-        CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
+        let geocoder = CLGeocoder()
+        let preferredLocale = Locale(identifier: "en") // Specify English language
+        geocoder.reverseGeocodeLocation(location, preferredLocale: preferredLocale) { [weak self] placemarks, error in
+            guard let self = self else { return }
+            
             if let error = error {
                 self.delegate?.locationService(self, didFailWithError: error)
             } else if let placemark = placemarks?.first {

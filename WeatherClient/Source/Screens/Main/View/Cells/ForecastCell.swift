@@ -91,4 +91,27 @@ class ForecastCell: UITableViewCell {
             weatherIconImageView.image = iconImage
         }
     }
+    
+    func applyBorderRadius(top: Bool, bottom: Bool) {
+        var corners: UIRectCorner = []
+        var cornerRadii: CGSize = .zero
+        
+        if top {
+            corners.insert([.topLeft, .topRight])
+            cornerRadii = CGSize(width: 12, height: 12)
+        }
+        
+        if bottom {
+            corners.insert([.bottomLeft, .bottomRight])
+            cornerRadii = CGSize(width: 12, height: 12)
+        }
+        
+        let path = UIBezierPath(roundedRect: bounds,
+                                byRoundingCorners: corners,
+                                cornerRadii: cornerRadii)
+        
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = path.cgPath
+        layer.mask = maskLayer
+    }
 }

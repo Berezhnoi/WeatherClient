@@ -24,11 +24,20 @@ extension MainView: UITableViewDataSource {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: HourlyTableViewCell.reuseIdentifier, for: indexPath) as! HourlyTableViewCell
             cell.configure(with: getHourlyForecastItems())
+            cell.separatorInset = UIEdgeInsets(top: 0, left: tableView.bounds.size.width, bottom: 0, right: 0)
             return cell
         }
         
         if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: ForecastCell.reuseIdentifier, for: indexPath) as! ForecastCell
+            
+            // Determine if it's the first or last cell in the section
+            let isFirstCell = indexPath.row == 0
+            let isLastCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
+            
+            // Apply border radius based on isFirstCell and isLastCell
+            cell.applyBorderRadius(top: isFirstCell, bottom: isLastCell)
+            
             if let forecastItem = getForecastItemByIndex(indexPath.row) {
                 let title = forecastItem.date?.dayOfWeek() ?? "-"
                 let tempMin: String = "\(Int(forecastItem.tempMin.rounded()))°"
@@ -52,20 +61,9 @@ extension MainView: UITableViewDataSource {
 extension MainView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 110 // Hourly cell size
+            return 120 // Hourly cell size
         }
         
         return 65 // Forecast cell size
-    }
-    
-    // Add a custom header view to create a gap between sections
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView()
-        headerView.backgroundColor = .clear // Set background color to clear or any desired color
-        return headerView
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 1 // Adjust the height as needed to create the gap
     }
 }

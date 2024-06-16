@@ -23,6 +23,9 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         setupInitialState()
         model.loadData()
+        let backgroundColor = UIColor(red: 0.67, green: 0.84, blue: 0.90, alpha: 1.0)
+        view.backgroundColor = backgroundColor
+        navigationController?.navigationBar.barTintColor = backgroundColor
     }
     
     private func setupInitialState() {
